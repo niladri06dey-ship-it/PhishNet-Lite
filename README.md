@@ -1,5 +1,3 @@
-# Phising Detector
- An AI-powered phishing detection system that analyzes URLs, emails, and messages to identify malicious content and protect users from online fraud in real time.
 # 🛡️ PhishNet Lite – Real-Time Phishing Detector
 
 PhishNet Lite is a lightweight web-based tool that detects phishing URLs in real time using rule-based analysis. It helps users identify potentially malicious websites before visiting them.
