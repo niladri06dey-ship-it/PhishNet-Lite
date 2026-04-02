@@ -1,0 +1,13 @@
+🚀 Quick Start (3 steps)
+1. Install Python dependencies
+bashpip install flask flask-cors
+2. Start the backend
+bashpython app.py
+→ Server starts at http://127.0.0.1:5000
+3. Open the frontend
+Just double-click index.html in your file manager — or serve it with:
+bashpython -m http.server 8080
+# open http://localhost:8080
+
+📂 What each file does
+FileRoleapp.pyFlask server + detect_phishing() logicindex.htmlPage structure — input, result card, verdictstyle.cssDark cyber-terminal theme, animations, responsive layoutscript.jsfetch() call, DOM updates, error handling, loading stateREADME.mdFull project docs with examples and API testing guide
