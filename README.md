@@ -1,120 +1,142 @@
-# 🛡️ PhishNet Lite – Real-Time Phishing Detector
+# 🛡️ PhishNet Lite — Real-Time Phishing Detector
 
-PhishNet Lite is a lightweight web-based tool that detects phishing URLs in real time using rule-based analysis. It helps users identify potentially malicious websites before visiting them.
+A lightweight, real-time phishing detection tool that analyzes URLs using a multi-layered security approach combining rule-based logic and external threat intelligence APIs.
 
 ---
 
 ## 🚀 Overview
 
-Phishing attacks are one of the most common cybersecurity threats, where attackers trick users into revealing sensitive information through fake websites.
-
-This project provides a simple and fast way to analyze URLs and classify them as:
-
-* ✅ Safe
-* ⚠️ Suspicious
-* ❌ Phishing
+Phishing attacks trick users into revealing sensitive data through fake websites.  
+PhishNet Lite helps detect such threats instantly by analyzing URLs before users visit them.
 
 ---
 
-## ✨ Features
+## ⚡ Key Features
 
-* 🔍 Instant URL analysis
-* ⚠️ Detection based on suspicious patterns
-* 📊 Risk-based classification system
-* 💡 Beginner-friendly and easy to use
-* ⚡ Fast and lightweight (no backend required)
-
----
-
-## 🧠 How It Works
-
-The system uses a rule-based detection approach:
-
-* Checks for unusual URL patterns
-* Identifies suspicious keywords (`login`, `verify`, `bank`)
-* Detects insecure protocols (`http`)
-* Flags abnormal URL structures (long URLs, special characters)
-
-Each rule contributes to a **risk score**, which determines the final result.
+- 🔍 Real-time URL scanning
+- 🧠 Rule-based detection engine
+- 🌐 Google Safe Browsing API integration
+- 🧪 VirusTotal API integration
+- 📊 Binary classification:
+  - ✅ Safe  
+  - ❌ Phishing  
+- 🎯 Shows detection source (Rule / Google / VirusTotal)
+- 🎨 Interactive UI with animations
 
 ---
 
-## 🛠️ Tech Stack
+## 🧠 Detection Architecture
 
-* HTML
-* CSS
-* JavaScript
+User Input URL  
+↓  
+Rule-Based Analysis  
+↓  
+Google Safe Browsing  
+↓  
+VirusTotal  
+↓  
+Final Decision (Safe / Phishing)
 
 ---
 
 ## 📂 Project Structure
 
-```
 phishnet-lite/
 │
-├── index.html
-├── style.css
-├── script.js
+├── frontend/
+│ ├── index.html
+│ ├── style.css
+│ └── script.js
+│
+├── backend/
+│ ├── app.py
+│ └── .env
+│
 └── README.md
-```
+
 
 ---
 
-## ▶️ How to Run
+## ⚙️ Setup Guide
 
-1. Clone the repository:
+### 🔧 Backend
 
-   ```
-   git clone <your-repo-link>
-   ```
+```bash
+cd backend
+pip install Flask Flask-Cors python-dotenv requests
+python app.py
+Server runs at:
 
-2. Open the folder:
+http://127.0.0.1:5000
+🔑 Environment Variables (.env)
+GOOGLE_API_KEY=your_google_api_key
+VT_API_KEY=your_virustotal_api_key
 
-   ```
-   cd phishnet-lite
-   ```
+🌐 Frontend
+Open frontend/index.html in browser
+OR
+Use Live Server in VS Code
+▶️ API Endpoint
 
-3. Run the project:
+POST /check
 
-   * Open `index.html` in your browser
-     OR
-   * Use Live Server in VS Code
+Request
+{
+  "url": "http://example.com"
+}
+Response
+
+Safe
+
+{
+  "result": "Safe ✅",
+  "label": "Safe",
+  "source": "No threat detected"
+}
+
+Phishing
+
+{
+  "result": "Phishing ❌",
+  "label": "Phishing",
+  "source": "Rule Engine / Google Safe Browsing / VirusTotal"
+}
+
+🧪 Testing URLs
+Safe
+https://google.com
+https://github.com
+Phishing
+http://fake-login-bank.com
+http://testsafebrowsing.appspot.com/s/phishing.html
+🎯 Detection Logic
+If ANY system detects threat → Phishing ❌
+Else → Safe ✅
+🎯 Use Cases
+Cybersecurity awareness
+Hackathon project
+Educational demo
+⚠️ Limitations
+Depends on rule heuristics and API coverage
+Free API rate limits
+🚀 Future Improvements
+🤖 Machine Learning detection
+🌐 Browser extension
+☁️ Cloud deployment
+
+
+👨‍💻 Author
+
+Mayukh Pal
+Niladri dey
+Badhon Banerjee
+
+
+
+🏆 Pitch Line
+
+"PhishNet Lite uses a multi-engine detection system combining heuristic analysis and real-time threat intelligence APIs."
+
 
 ---
-
-## 🎯 Use Cases
-
-* Cybersecurity awareness
-* Educational demonstration
-* Hackathon project
-
----
-
-## ⚠️ Limitations
-
-* Uses basic rule-based detection
-* May not detect advanced phishing techniques
-* Not a replacement for professional security tools
-
----
-
-## 🚀 Future Improvements
-
-* 🤖 Machine Learning integration
-* 🌐 Browser extension support
-* 📊 Advanced threat analytics
-* 🔗 Integration with APIs (Google Safe Browsing, VirusTotal)
-
----
-
-## 👨‍💻 Team
-
-* Your Name
-* Team Members
-
----
-
-## ⭐ Support
-
-If you found this useful, consider giving it a ⭐ on GitHub!
 
