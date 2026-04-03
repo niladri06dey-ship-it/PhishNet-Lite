@@ -123,6 +123,8 @@ Free API rate limits
 🤖 Machine Learning detection
 🌐 Browser extension
 ☁️ Cloud deployment
+
+
 👨‍💻 Author
 
 Niladri Dey
