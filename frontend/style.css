@@ -1,35 +1,17 @@
-/* Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body */
 body {
     font-family: 'Segoe UI', sans-serif;
-
-    background: url("assets/background.jpg") no-repeat center center fixed;
-    background-size: cover;
-
-    backdrop-filter: blur(2px);
-
+    background: #020617;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-
-    margin: 0;
-}
-
-/* Overlay */
-body::before {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 0;
+    color: white;
 }
 
 /* Canvas */
@@ -37,14 +19,11 @@ body::before {
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: -2;
+    z-index: -1;
 }
 
 /* Container */
 .container {
-    position: relative;
-    z-index: 1;
-
     background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(15px);
 
@@ -58,25 +37,8 @@ body::before {
     border: 1px solid rgba(56, 189, 248, 0.3);
 
     box-shadow:
-        0 0 20px rgba(56, 189, 248, 0.3),
-        0 0 60px rgba(56, 189, 248, 0.1);
-
-    animation: fadeIn 0.8s ease-in-out;
-}
-
-/* Responsive */
-@media (min-width: 1024px) {
-    .container {
-        width: 600px;
-        padding: 45px;
-    }
-}
-
-@media (max-width: 500px) {
-    .container {
-        width: 90%;
-        padding: 25px;
-    }
+        0 0 25px rgba(56, 189, 248, 0.4),
+        0 0 80px rgba(56, 189, 248, 0.15);
 }
 
 /* Title */
@@ -85,19 +47,10 @@ body::before {
     text-shadow: 0 0 20px #38bdf8;
 }
 
-/* Subtitle */
 .subtitle {
+    margin: 10px 0;
     color: #38bdf8;
     font-size: 14px;
-    margin-bottom: 10px;
-    text-shadow: 0 0 10px #38bdf8;
-}
-
-/* Instruction */
-.instruction {
-    font-size: 13px;
-    color: #94a3b8;
-    margin-bottom: 15px;
 }
 
 /* Input */
@@ -106,12 +59,8 @@ input {
     padding: 14px;
     border-radius: 10px;
     border: none;
-    margin-bottom: 15px;
-}
-
-input:focus {
+    margin: 15px 0;
     outline: none;
-    box-shadow: 0 0 10px #38bdf8;
 }
 
 /* Button */
@@ -122,53 +71,39 @@ button {
     background: #38bdf8;
     cursor: pointer;
     font-weight: bold;
-
     box-shadow: 0 0 20px #38bdf8;
+    transition: 0.3s;
 }
 
 button:hover {
     transform: scale(1.08);
-}
-
-button:active {
-    transform: scale(0.95);
+    box-shadow: 0 0 40px #38bdf8;
 }
 
 /* Result */
 .result {
     margin-top: 20px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
-    transition: all 0.3s ease;
 }
 
-/* Result Colors */
-.result.safe {
+/* Colors */
+.safe {
     color: #22c55e;
-    text-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+    text-shadow: 0 0 10px #22c55e;
 }
 
-.result.phishing {
+.phishing {
     color: #ef4444;
-    text-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+    text-shadow: 0 0 10px #ef4444;
 }
 
-.result.danger {
-    color: #ef4444;
-}
-
-/* Source Info */
-.source {
-    font-size: 12px;
-    margin-top: 8px;
-    color: #94a3b8;
-    opacity: 0.85;
-    font-style: italic;
+.warning {
+    color: #facc15;
 }
 
 /* Progress */
 .progress {
-    width: 100%;
     height: 8px;
     background: #1e293b;
     margin-top: 15px;
@@ -183,6 +118,13 @@ button:active {
     transition: 0.4s;
 }
 
+/* Source */
+#source {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
 /* AI Status */
 .ai-status {
     margin-top: 10px;
@@ -190,13 +132,7 @@ button:active {
     animation: blink 1.5s infinite;
 }
 
-/* Animations */
 @keyframes blink {
     50% { opacity: 1; }
     0%,100% { opacity: 0.5; }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px);}
-    to { opacity: 1; }
 }
