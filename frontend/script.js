@@ -1,13 +1,17 @@
-// 🔴 BACKEND API
+// 🔴 BACKEND API (Railway)
 const API_URL = "https://web-production-c7a81.up.railway.app/check";
 
-// 🔥 Pre-warm backend (reduces delay)
+
+// 🔥 PRE-WARM BACKEND (reduces delay)
 window.addEventListener("load", () => {
-    fetch("https://web-production-c7a81.up.railway.app").catch(() => {});
+    fetch("https://web-production-c7a81.up.railway.app")
+        .then(() => console.log("Server warmed"))
+        .catch(() => console.log("Warm failed"));
 });
 
+
 // -------------------- PHISHING CHECK --------------------
-async function checkPhishing(retry = true) {
+async function checkPhishing(retry = 2) {
     const url = document.getElementById("urlInput").value;
     const resultDiv = document.getElementById("result");
     const progressBar = document.getElementById("progressBar");
@@ -19,44 +23,73 @@ async function checkPhishing(retry = true) {
         return;
     }
 
-    resultDiv.innerText = "🚀 Initializing AI scan...";
-    resultDiv.className = "result";
+    // 🧠 Smart loading animation
+    let messages = [
+        "🔍 Scanning URL...",
+        "🧠 AI analyzing patterns...",
+        "🔐 Checking security layers..."
+    ];
+
+    let i = 0;
+    let interval = setInterval(() => {
+        resultDiv.innerText = messages[i % messages.length];
+        i++;
+    }, 1200);
+
     progressBar.style.width = "15%";
 
     try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000); // 30 sec
+        const timeout = setTimeout(() => controller.abort(), 60000); // 60 sec
 
         const response = await fetch(API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ url }),
             signal: controller.signal
         });
 
         clearTimeout(timeout);
 
-        if (!response.ok) throw new Error("Server error");
+        if (!response.ok) {
+            throw new Error("Server error");
+        }
 
         const data = await response.json();
 
+        clearInterval(interval);
+
+        // ✅ Show result
         resultDiv.innerText = data.result;
         resultDiv.className = "result " + data.label.toLowerCase();
 
+        // ✅ Show source
         if (sourceDiv) {
             sourceDiv.innerText = "Detected by: " + (data.source || "System");
         }
 
+        // ✅ Progress bar
         progressBar.style.width = data.label === "Safe" ? "90%" : "25%";
 
     } catch (error) {
 
-        if (retry) {
-            resultDiv.innerText = "⏳ Warming up secure server...";
-            resultDiv.className = "result warning";
+        clearInterval(interval);
+
+        // 🔁 Multi-retry system
+        if (retry === 2) {
+            resultDiv.innerText = "⏳ Connecting to AI engine...";
             progressBar.style.width = "10%";
 
-            setTimeout(() => checkPhishing(false), 4000);
+            setTimeout(() => checkPhishing(1), 3000);
+
+        } else if (retry === 1) {
+            resultDiv.innerText = "🔄 Retrying secure connection...";
+            progressBar.style.width = "15%";
+
+            setTimeout(() => checkPhishing(0), 4000);
+
         } else {
             resultDiv.innerText = "❌ Server busy, try again";
             resultDiv.className = "result phishing";
@@ -87,7 +120,7 @@ for (let i = 0; i < 100; i++) {
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // lines
+    // Draw connecting lines
     for (let i = 0; i < particles.length; i++) {
         for (let j = i; j < particles.length; j++) {
             let dx = particles[i].x - particles[j].x;
@@ -103,8 +136,7 @@ function animate() {
             }
         }
     }
-
-    // dots
+    // Draw particles
     particles.forEach(p => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
@@ -123,6 +155,8 @@ function animate() {
 
 animate();
 
+
+// -------------------- RESPONSIVE CANVAS --------------------
 window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
