@@ -107,8 +107,8 @@ for (let i = 0; i < 100; i++) {
     particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        dx: (Math.random() - 0.5),
-        dy: (Math.random() - 0.5)
+        dx: (Math.random() - 0.5) * 2,
+        dy: (Math.random() - 0.5) * 2
     });
 }
 
@@ -137,8 +137,8 @@ function animate() {
         ctx.fillStyle = "#38bdf8";
         ctx.fill();
 
-        p.x += p.dx;
-        p.y += p.dy;
+        p.x += p.dx * 1.5;
+        p.y += p.dy * 1.5;
 
         if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
