@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import re, requests, os, datetime
 from dotenv import load_dotenv
@@ -13,7 +13,7 @@ except:
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend')
 CORS(app)
 
 # ---------------- ENV ----------------
@@ -31,7 +31,11 @@ except:
 # ---------------- HOME ----------------
 @app.route('/')
 def home():
-    return "🛡️ PhishNet Lite Backend Running"
+    return send_from_directory('../frontend', 'index.html')
+
+@app.route('/<path:path>')
+def static_files(path):
+    return send_from_directory('../frontend', path)
 
 # ---------------- RULE ENGINE ----------------
 def rule_based_detection(url):
