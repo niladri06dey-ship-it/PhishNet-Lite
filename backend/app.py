@@ -17,7 +17,7 @@ db = client["phishnet"]
 collection = db["logs"]
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-VT_API_KEY = os.getenv("VIRUSTOTAL_API_KEY")
+VT_API_KEY = os.getenv("VT_API_KEY_")
 
 # ---------------- HOME ----------------
 @app.route('/')
