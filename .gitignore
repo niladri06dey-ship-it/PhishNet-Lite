@@ -1,3 +1,9 @@
+# Vercel
+.vercel
+.vercel/
+vercel.json
+.vercelignore
+
 # Environment variables
 .env
 .env.local
