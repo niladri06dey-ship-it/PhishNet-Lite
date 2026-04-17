@@ -1,9 +1,9 @@
-// 🔴 BACKEND API (Railway)
-const API_URL = "https://web-production-c7a81.up.railway.app/check";
+// 🔴 BACKEND API (Local)
+const API_URL = "http://127.0.0.1:5000/check";
 
 // 🔥 PRE-WARM BACKEND
 window.addEventListener("load", () => {
-    fetch("https://web-production-c7a81.up.railway.app")
+    fetch("http://127.0.0.1:5000")
         .then(() => console.log("Server warmed"))
         .catch(() => console.log("Warm failed"));
 });

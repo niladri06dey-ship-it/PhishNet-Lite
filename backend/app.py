@@ -4,6 +4,8 @@ import re, requests, os, datetime
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from urllib.parse import urlparse
+
+# Safe import for whois
 try:
     import whois
 except:
@@ -14,13 +16,17 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# ---------------- MONGODB ----------------
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client["phishnet"]
-collection = db["logs"]
-
+# ---------------- ENV ----------------
+MONGO_URI = os.getenv("MONGO_URI")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-VT_API_KEY = os.getenv("VT_API_KEY_")
+
+# ---------------- MONGODB (SAFE INIT) ----------------
+try:
+    client = MongoClient(MONGO_URI)
+    db = client["phishnet"]
+    collection = db["logs"]
+except:
+    collection = None
 
 # ---------------- HOME ----------------
 @app.route('/')
@@ -65,16 +71,19 @@ def rule_based_detection(url):
 # ---------------- BRAND SPOOF ----------------
 def detect_brand_spoofing(url):
     brands = ["google","facebook","amazon","paytm","upi","bank","sbi","icici","hdfc"]
-    suspicious = 0
+    score = 0
 
     for b in brands:
         if b in url.lower() and not url.endswith(f"{b}.com"):
-            suspicious += 2
+            score += 2
 
-    return suspicious
+    return score
 
 # ---------------- GOOGLE SAFE BROWSING ----------------
 def check_google_safe_browsing(url):
+    if not GOOGLE_API_KEY:
+        return False
+
     try:
         endpoint = f"https://safebrowsing.googleapis.com/v4/threatMatches:find?key={GOOGLE_API_KEY}"
         body = {
@@ -87,40 +96,19 @@ def check_google_safe_browsing(url):
             }
         }
 
-        res = requests.post(endpoint, json=body, timeout=5)
+        res = requests.post(endpoint, json=body, timeout=3)
         data = res.json()
 
         return bool(data.get("matches"))
     except:
         return False
 
-# ---------------- VIRUSTOTAL ----------------
-def check_virustotal(url):
-    try:
-        headers = {"x-apikey": VT_API_KEY}
-        res = requests.post(
-            "https://www.virustotal.com/api/v3/urls",
-            headers=headers,
-            data={"url": url}
-        )
-
-        analysis_url = res.json()["data"]["links"]["self"]
-        analysis = requests.get(analysis_url, headers=headers).json()
-
-        stats = analysis["data"]["attributes"]["stats"]
-        malicious = stats.get("malicious", 0)
-
-        return malicious > 0
-    except:
-        return False
-
-# ---------------- WHOIS ----------------
+# ---------------- DOMAIN AGE ----------------
 def domain_age_check(url):
     if not whois:
-        return 1  # fallback risk
+        return 1
 
     try:
-        from urllib.parse import urlparse
         domain = urlparse(url).netloc
         info = whois.whois(domain)
 
@@ -141,6 +129,11 @@ def domain_age_check(url):
             return 0
     except:
         return 1
+
+# ---------------- VALIDATION ----------------
+def is_valid_url(url):
+    return bool(re.match(r'^(https?://)?([a-z0-9.-]+)\.([a-z]{2,})', url, re.I))
+
 # ---------------- MAIN API ----------------
 @app.route('/check', methods=['POST'])
 def check():
@@ -155,18 +148,23 @@ def check():
             "source": "Invalid URL"
         }
     else:
-        score = rule_based_detection(url)
+        score = 0
+
+        # 🔥 Core logic
+        score += rule_based_detection(url)
         score += detect_brand_spoofing(url)
-        score += domain_age_check(url)
 
-        # 🔥 External APIs
-        google_flag = check_google_safe_browsing(url)
-        vt_flag = check_virustotal(url)
-
-        if google_flag or vt_flag:
+        # 🔥 Google check
+        if check_google_safe_browsing(url):
             score += 5
 
-        # ---------------- FINAL DECISION ----------------
+        # 🔥 WHOIS (safe)
+        try:
+            score += domain_age_check(url)
+        except:
+            pass
+
+        # ---------------- DECISION ----------------
         if score >= 6:
             result = {
                 "result": "Phishing ❌",
@@ -190,14 +188,15 @@ def check():
             }
 
     # ---------------- SAVE ----------------
-    try:
-        collection.insert_one({
-            "url": url,
-            **result,
-            "time": datetime.datetime.utcnow()
-        })
-    except:
-        pass
+    if collection is not None:
+        try:
+            collection.insert_one({
+                "url": url,
+                **result,
+                "time": datetime.datetime.now(datetime.timezone.utc)
+            })
+        except:
+            pass
 
     return jsonify(result)
 
