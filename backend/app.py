@@ -4,7 +4,10 @@ import re, requests, os, datetime
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from urllib.parse import urlparse
-import whois
+try:
+    import whois
+except:
+    whois = None
 
 load_dotenv()
 
@@ -113,7 +116,11 @@ def check_virustotal(url):
 
 # ---------------- WHOIS ----------------
 def domain_age_check(url):
+    if not whois:
+        return 1  # fallback risk
+
     try:
+        from urllib.parse import urlparse
         domain = urlparse(url).netloc
         info = whois.whois(domain)
 
@@ -122,23 +129,18 @@ def domain_age_check(url):
             creation_date = creation_date[0]
 
         if not creation_date:
-            return 0
+            return 1
 
         age_days = (datetime.datetime.now() - creation_date).days
 
         if age_days < 30:
-            return 3  # very risky
+            return 3
         elif age_days < 180:
             return 2
         else:
             return 0
     except:
-        return 1  # unknown risk
-
-# ---------------- VALIDATION ----------------
-def is_valid_url(url):
-    return bool(re.match(r'^(https?://)?([a-z0-9.-]+)\.([a-z]{2,})', url, re.I))
-
+        return 1
 # ---------------- MAIN API ----------------
 @app.route('/check', methods=['POST'])
 def check():
